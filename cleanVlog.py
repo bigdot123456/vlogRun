@@ -33,9 +33,9 @@ def VlogIterate(PathName):
 
 
 def vlogClean(fpathe, fname):
-    f0 = os.path.join(fpathe, f'{fname}')
+    f0 = os.path.join(fpathe, f'{fname}.vlog')
     f1 = os.path.join(fpathe, f'{fname}.dec')
-    cmd=f'python cleanVlog.py {f0}'
+
     try:
         with open(f0, 'r') as fp_in:
             a = fp_in.readlines()
@@ -45,21 +45,23 @@ def vlogClean(fpathe, fname):
 
             a0 = a[0]
             a1 = a[-1]
-            if a0.index('QuestaSim-64') > -1 and a1.index('Warnings') > -1:
+            # use index should add try and except sentence
+            #            if a0.index('QuestaSim-64') > -1 and a1.index('Warnings') > -1:
+            if a0.find('QuestaSim') > -1 and a1.find('Warnings') > -1:
                 with open(f1, 'w') as fp_out:
                     w_line = a[-1]
                     w_line0 = re.split(r'[\s\,\;]+', w_line)
-                    w_line1 = int(w_line0[3]) + 3
+                    w_line1 = int(w_line0[3]) + int(w_line0[1]) + 3
                     print(f"{f0} will cut {w_line1} lines!")
 
                     b = a[3:-1 - w_line1]
                     fp_out.writelines(b)
             else:
                 print(f'{f0} is not valid decrypt files!')
-    except:
-        print(f"Error: {f0} doesn't exists!")
 
-    return cmd
+    except IOError as err:
+        print(f"File Error {str(err)}: {f0} doesn't exists!")
+
 
 
 # Press the green button in the gutter to run the script.
