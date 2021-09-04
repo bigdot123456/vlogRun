@@ -69,7 +69,7 @@ def vlogRun(fpathe, fname):
             print(f"{f0} is not encrypted vlog, omit!")
             return ""
 
-    cmd = f"{execFile} {f0} > {f1}"
+    cmd = f"{execFile} -sv -sv17compat {f0} > {f1}"
     print(f"vlog decrypting {f0}:  {cmd}")
     try:
         os.system(cmd)  # should wait it finish
@@ -82,8 +82,8 @@ def vlogRun(fpathe, fname):
         print(f"Decrypt failure with {cmd}, remove TMP files!")
         os.remove(f1)
 
-    while not os.path.exists(f1):
-        time.sleep(1)
+    # while not os.path.exists(f1):
+    #     time.sleep(1)
 
     return cmd
 
