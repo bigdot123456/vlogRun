@@ -1,1 +1,5 @@
 /work/
+*.mem
+*.vlog
+*.dec
+

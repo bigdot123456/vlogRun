@@ -4,10 +4,13 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 import os
 import re
+from SplitSV import *
+# can use import SplitSV; then we should run with SplitSV.func()
+
 # import subprocess
 # out_bytes = subprocess.check_output(['netstat','-a'])
 # out_bytes = subprocess.check_output('grep python j wc > out', shell=True)
-import time
+#import time
 
 execFile = "vlog-chen.exe"
 execFile = "/eda/mentor/questasim/bin/vlog"
@@ -36,6 +39,7 @@ def VlogIterate(PathName):
                 if cmd != "":
                     cmdList.append(cmd + '\n')
                     vlogClean(fpathe, f1)
+                    vlogSplit(fpathe, f1)
 
             if filename.endswith('vhd'):  # 判断是否是"xxx"结尾
 
