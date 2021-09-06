@@ -5,6 +5,7 @@
 import os
 import re
 from SplitSV import *
+from cleanVlog import *
 # can use import SplitSV; then we should run with SplitSV.func()
 
 # import subprocess
@@ -135,51 +136,6 @@ def vhdlRun(fpathe, fname):
         os.remove(f1)
 
     return cmd
-
-
-def vlogClean(fpathe, fname):
-    f0 = os.path.join(fpathe, f'{fname}.vlog')
-    f1 = os.path.join(fpathe, f'{fname}.dec')
-
-    try:
-        # with open(f0, 'rb', encoding='UTF-8') as fp_in:
-        with open(f0, 'r') as fp_in:
-            a = fp_in.readlines()
-            if len(a) == 0:
-                print(f"{f0} is null, Please check command!")
-                return
-
-            a0 = str(a[0]).strip('\n')
-            # a1 = str(a[-1]).strip('\n')
-            a1 = str(a[-1]).replace('\n', '').replace('\r\n', '')
-            # use index should add try and except sentence
-            #            if a0.index('QuestaSim-64') > -1 and a1.index('Warnings') > -1:
-            flag0 = a0.find('QuestaSim')
-            flag1 = a1.find('Warnings')
-
-            if flag0 > -1 and flag1 > -1:
-                with open(f1, 'w', encoding='UTF-8') as fp_out:
-                    w_line0 = re.split(r'[\s\,\;]+', a1)
-                    min_num = int(w_line0[1]) + int(w_line0[3]) + 3
-                    max_num = 2 * int(w_line0[1]) + int(w_line0[3]) + 3
-                    print(f"{f0} should cut max:{max_num} min:{min_num} lines!")
-                    b = a[3:-min_num]
-                    # b_num = len(b)
-                    b0 = b[0: - max_num]
-                    fp_out.writelines(b0)
-                    b1 = b[-max_num + 1:-1]
-
-                    for line in b1:
-                        if matchPattern.search(line):
-                            break
-                        else:
-                            fp_out.write(line)
-            else:
-                print(f'{f0} is not valid decrypt files!')
-
-    except IOError as err:
-        print(f"File Error {str(err)}: {f0} doesn't exists!")
-
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
