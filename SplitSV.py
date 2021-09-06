@@ -13,6 +13,8 @@ import re
 
 m0Pattern = re.compile(r"^[\s]*module[\s]+([A-Za-z0-9_]{1,})[\s]*")
 m1Pattern = re.compile(r"[\s]*endmodule")
+p0Pattern = re.compile(r"^[\s]*package[\s]+([A-Za-z0-9_]{1,})[\s]*")
+p1Pattern = re.compile(r"[\s]*endmodule")
 
 
 def vlogSplit(fpathe, fname):
@@ -45,8 +47,15 @@ def vlogSplit(fpathe, fname):
         for b in a:
             t.append(b)
             x = m0Pattern.search(b)
+            y = p0Pattern.search(b)
+
             if x:
                 p = m0Pattern.split(b)
+                mName = p[1]
+                f1 = os.path.join(SubPath, f'{mName}.sv')
+
+            if y:
+                p = p0Pattern.split(b)
                 mName = p[1]
                 f1 = os.path.join(SubPath, f'{mName}.sv')
 
@@ -56,7 +65,13 @@ def vlogSplit(fpathe, fname):
                     fp_out.writelines(t)
                 t = []
 
-        if t != []:
+            if p1Pattern.search(b):
+                with open(f1, 'w', encoding='UTF-8') as fp_out:
+                    print(f"\t***** Write package: {mName}")
+                    fp_out.writelines(t)
+                t = []
+
+        if t:
             print(f"Omit content:\n{t}")
 
 
