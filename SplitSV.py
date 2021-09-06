@@ -14,7 +14,7 @@ import re
 m0Pattern = re.compile(r"^[\s]*module[\s]+([A-Za-z0-9_]{1,})[\s]*")
 m1Pattern = re.compile(r"[\s]*endmodule")
 p0Pattern = re.compile(r"^[\s]*package[\s]+([A-Za-z0-9_]{1,})[\s]*")
-p1Pattern = re.compile(r"[\s]*endmodule")
+p1Pattern = re.compile(r"[\s]*endpackage")
 
 
 def vlogSplit(fpathe, fname):
