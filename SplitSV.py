@@ -26,7 +26,7 @@ def vlogSplit(fpathe, fname):
         if not os.path.exists(SubPath):
             # 目录不存在，进行创建操作
             os.makedirs(SubPath)  # 使用os.makedirs()方法创建多层目录
-            print("Add Split directory" + SubPath)
+            print(f"Add Split directory {SubPath}")
         else:
             print(f"{SubPath} directory exists")
     except BaseException as msg:
@@ -52,7 +52,7 @@ def vlogSplit(fpathe, fname):
 
             if m1Pattern.search(b):
                 with open(f1, 'w', encoding='UTF-8') as fp_out:
-                    print(f"write module {mName}!\n")
+                    print(f"\t***** Write module: {mName}")
                     fp_out.writelines(t)
                 t = []
 
