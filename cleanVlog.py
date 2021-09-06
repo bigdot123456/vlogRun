@@ -5,31 +5,35 @@
 import os
 import re
 
-execFile = "vlog-chen.exe"
+matchPattern = re.compile(r"^[*]+ Error:|^[*]+ Warning:")
 
 
-def VlogIterate(PathName):
+def VlogCleanIterate(PathName):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, Go {PathName}!\n')  # Press Ctrl+F8 to toggle the breakpoint.
 
     # all = []
     num = 1
-    cmdList = []
     for fpathe, dirs, fs in os.walk(PathName):  # os.walk是获取所有的目录
         for f1 in fs:
             filename = os.path.join(fpathe, f1)
-            if filename.endswith('vlog'):  # 判断是否是"xxx"结尾
+            if filename.endswith('sv') | filename.endswith('v'):  # 判断是否是"xxx"结尾
 
-                print(f"{num}: Processing {filename} !")
+                print(f"{num}: Processing vlog {filename} !")
                 num = num + 1
                 # fs = f1.find('sv_', 1, 3)
                 # fs = f1.find('sv_')
                 # if fs == -1:
-                cmd=vlogClean(fpathe, f1)
-                cmdList.append(cmd + '\n')
+                vlogClean(fpathe, f1)
 
-    with open("./cmdList1.sh", 'w') as fw:
-        fw.writelines(cmdList)
+            if filename.endswith('vhd'):  # 判断是否是"xxx"结尾
+
+                print(f"{num}: Processing vcom {filename} !")
+                num = num + 1
+                # fs = f1.find('sv_', 1, 3)
+                # fs = f1.find('sv_')
+                # if fs == -1:
+                vlogClean(fpathe, f1)
 
 
 def vlogClean(fpathe, fname):
@@ -37,25 +41,39 @@ def vlogClean(fpathe, fname):
     f1 = os.path.join(fpathe, f'{fname}.dec')
 
     try:
+        # with open(f0, 'rb', encoding='UTF-8') as fp_in:
         with open(f0, 'r') as fp_in:
             a = fp_in.readlines()
             if len(a) == 0:
                 print(f"{f0} is null, Please check command!")
                 return
 
-            a0 = a[0]
-            a1 = a[-1]
+            a0 = str(a[0]).strip('\n')
+            # a1 = str(a[-1]).strip('\n')
+            a1 = str(a[-1]).replace('\n', '').replace('\r\n', '')
             # use index should add try and except sentence
             #            if a0.index('QuestaSim-64') > -1 and a1.index('Warnings') > -1:
-            if a0.find('QuestaSim') > -1 and a1.find('Warnings') > -1:
-                with open(f1, 'w') as fp_out:
-                    w_line = a[-1]
-                    w_line0 = re.split(r'[\s\,\;]+', w_line)
-                    w_line1 = int(w_line0[3]) + int(w_line0[1]) + 3
-                    print(f"{f0} will cut {w_line1} lines!")
+            flag0 = a0.find('QuestaSim')
+            flag1 = a1.find('Warnings')
 
-                    b = a[3:-1 - w_line1]
-                    fp_out.writelines(b)
+            if flag0 > -1 and flag1 > -1:
+                with open(f1, 'w', encoding='UTF-8') as fp_out:
+                    w_line0 = re.split(r'[\s\,\;]+', a1)
+                    min_num = int(w_line0[1]) + int(w_line0[3]) + 3
+                    max_num = 2 * int(w_line0[1]) + int(w_line0[3]) + 3
+                    cut_num=max_num-min_num
+                    print(f"{f0} should cut max:{max_num} min:{min_num} lines!")
+                    b = a[3:-min_num]
+                    # b_num = len(b)
+                    b0 = b[0: - cut_num]
+                    fp_out.writelines(b0)
+                    b1 = b[-cut_num + 1:-1]
+
+                    for line in b1:
+                        if matchPattern.search(line):
+                            break
+                        else:
+                            fp_out.write(line)
             else:
                 print(f'{f0} is not valid decrypt files!')
 
@@ -63,7 +81,7 @@ def vlogClean(fpathe, fname):
         print(f"File Error {str(err)}: {f0} doesn't exists!")
 
 
-
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    VlogIterate('./')
+    VlogCleanIterate('./')
+    # vlogClean('./', 'can_v5_0_rfs.vhd')
