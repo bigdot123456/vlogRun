@@ -67,7 +67,7 @@ def vlogClean(fpathe, fname):
                     # b_num = len(b)
                     b0 = b[0: -1 - cut_num] # here when cut_num is 0, all is content
                     fp_out.writelines(b0)
-                    b1 = b[-1 - cut_num: -1]
+                    b1 = b[-1 - cut_num:] # if we use 0, it will be empty.
 
                     for line in b1:
                         if matchPattern.search(line):
@@ -85,4 +85,6 @@ def vlogClean(fpathe, fname):
 if __name__ == '__main__':
     # VlogCleanIterate('./')
     # vlogClean('./', 'ecc_v2_0_vl_rfs.v')
-    vlogClean('./', 'can_v5_0_rfs.vhd')
+    vlogClean('./', 'ldpc_decoder_back.sv')
+
+    # vlogClean('./', 'can_v5_0_rfs.vhd')
